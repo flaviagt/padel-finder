@@ -6,6 +6,8 @@ import argparse
 from datetime import date, datetime
 
 from padel_finder.config import SUPPORTED_VENUES
+from padel_finder.formatter import format_available_slots, format_venues
+from padel_finder.ranking import rank_by_price
 from padel_finder.scraper import AvailabilityFetchError, fetch_all_availability
 
 
@@ -84,30 +86,9 @@ def _parse_time_range(value: str) -> tuple[str, str]:
 
 
 def _print_venues() -> None:
-    print("🎾 Supported Padel Venues")
-    print()
-    for index, venue in enumerate(SUPPORTED_VENUES, start=1):
-        print(f"{index}. {venue.name}")
+    print(format_venues(SUPPORTED_VENUES))
 
 
 def _print_search_results(date_value: str, start_time: str, end_time: str, slots: list) -> None:
-    sorted_slots = sorted(slots, key=lambda slot: slot.price)
-
-    if not sorted_slots:
-        print("❌ No courts available.")
-        print()
-        print("No padel courts were found for:")
-        print(f"Date: {date_value}")
-        print(f"Time: {start_time} - {end_time}")
-        return
-
-    print("🎾 Available Courts")
-    print(f"Date: {date_value}")
-    print(f"Time: {start_time} - {end_time}")
-    print()
-    for index, slot in enumerate(sorted_slots, start=1):
-        print(f"{index}. {slot.venue}")
-        print(f"   Court: {slot.court}")
-        print(f"   Time: {slot.start_time} - {slot.end_time}")
-        print(f"   Price: Rp{slot.price:,}")
-        print()
+    sorted_slots = rank_by_price(slots)
+    print(format_available_slots(sorted_slots, date_value, start_time, end_time))
