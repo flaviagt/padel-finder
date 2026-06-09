@@ -1,9 +1,51 @@
-# padel-court-availibility
+# padel-finder
 
-Finding a padel court requires checking multiple booking websites, selecting a date, comparing prices, and manually looking through available slots. This tool automates the search process by querying favorite padel venues, filtering available courts by date/time, and ranking options by price.
+`padel-finder` is a Python command-line tool that helps users find available padel courts by checking multiple favorite AYO venues, filtering for a requested date and time, and ranking available courts from cheapest to most expensive.
+
+Supported venues:
+
+- Casablanca Padel Club
+- The Six Point Padel Club
+- Bumi Pancasona Sports Club
+
+## Installation
+
+Install directly from GitHub with `uv`:
+
+```bash
+uv add "git+https://github.com/<username>/padel-finder.git"
+```
 
 ## Usage
 
-<Instructions for how to use the tool. Give example commands, and explain what
-they do.>
+List all supported venues:
 
+```bash
+padel-finder venues
+```
+
+Search for available courts across supported venues:
+
+```bash
+padel-finder search --date YYYY-MM-DD --time HH:MM-HH:MM
+```
+
+Example:
+
+```bash
+padel-finder search --date 2026-06-10 --time 13:00-14:00
+```
+
+## Development
+
+Install dependencies:
+
+```bash
+uv sync
+```
+
+Run tests:
+
+```bash
+uv run pytest
+```

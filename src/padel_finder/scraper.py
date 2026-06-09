@@ -142,7 +142,39 @@ def _court_name(field: Mapping[str, Any]) -> str | None:
 
 def _iter_slots(field: Mapping[str, Any]) -> Iterable[Mapping[str, Any]]:
     for key in ("slots", "times", "op_times", "operational_times", "availability"):
-        yield from _mapping_items(field.get(key))
+        yield from _slot_items(field.get(key))
+
+
+def _slot_items(value: Any) -> Iterable[Mapping[str, Any]]:
+    if isinstance(value, Mapping):
+        if _looks_like_slot(value):
+            yield value
+            return
+        for nested in value.values():
+            yield from _slot_items(nested)
+    elif isinstance(value, list):
+        for item in value:
+            yield from _slot_items(item)
+
+
+def _looks_like_slot(value: Mapping[str, Any]) -> bool:
+    slot_keys = {
+        "available",
+        "is_available",
+        "isAvailable",
+        "status",
+        "availability_status",
+        "booked",
+        "is_booked",
+        "isBooked",
+        "start_time",
+        "startTime",
+        "end_time",
+        "endTime",
+        "time_range",
+        "label",
+    }
+    return bool(slot_keys.intersection(value))
 
 
 def _is_available(slot: Mapping[str, Any]) -> bool:
