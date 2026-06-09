@@ -1,0 +1,2 @@
+"""Supported venue configuration."""
+
