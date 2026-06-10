@@ -82,6 +82,8 @@ def parse_availability(
         court_name = _court_name(field)
         if not court_name:
             continue
+        if not _is_padel_field(field, court_name):
+            continue
 
         for slot in _iter_slots(field):
             if not _is_available(slot):
@@ -140,6 +142,13 @@ def _court_name(field: Mapping[str, Any]) -> str | None:
     return None
 
 
+def _is_padel_field(field: Mapping[str, Any], court_name: str) -> bool:
+    sport_id = field.get("sport_id") or field.get("sportId")
+    if sport_id == 12 or sport_id == "12":
+        return True
+    return "padel" in court_name.lower()
+
+
 def _iter_slots(field: Mapping[str, Any]) -> Iterable[Mapping[str, Any]]:
     for key in ("slots", "times", "op_times", "operational_times", "availability"):
         yield from _slot_items(field.get(key))
@@ -180,18 +189,34 @@ def _looks_like_slot(value: Mapping[str, Any]) -> bool:
 def _is_available(slot: Mapping[str, Any]) -> bool:
     for key in ("available", "is_available", "isAvailable"):
         value = slot.get(key)
-        if isinstance(value, bool):
-            return value
+        available = _truthy_flag(value)
+        if available is not None:
+            return available
 
     status = slot.get("status") or slot.get("availability_status")
     if isinstance(status, str):
         return status.strip().lower() in {"available", "open", "free"}
 
-    booked = slot.get("booked") or slot.get("is_booked") or slot.get("isBooked")
-    if isinstance(booked, bool):
-        return not booked
+    for key in ("booked", "is_booked", "isBooked"):
+        booked = _truthy_flag(slot.get(key))
+        if booked is not None:
+            return not booked
 
     return False
+
+
+def _truthy_flag(value: Any) -> bool | None:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, int):
+        return value == 1
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        if normalized in {"1", "true", "yes", "available"}:
+            return True
+        if normalized in {"0", "false", "no", "unavailable", "booked"}:
+            return False
+    return None
 
 
 def _slot_times(slot: Mapping[str, Any]) -> tuple[str, str]:
