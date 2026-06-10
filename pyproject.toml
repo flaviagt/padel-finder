@@ -3,7 +3,7 @@ name = "padel-finder"
 version = "0.1.0"
 description = "Find available padel courts across supported AYO venues and rank them by price."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.8"
 dependencies = [
     "requests>=2.32.0",
 ]
@@ -17,7 +17,7 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "pytest>=8.0.0",
+    "pytest>=8.0.0,<9",
 ]
 
 [tool.pytest.ini_options]
