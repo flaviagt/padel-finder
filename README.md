@@ -1,8 +1,8 @@
 # padel-finder
 
-`padel-finder` is a Python command-line tool that helps users find available padel courts by checking multiple favorite AYO venues, filtering for a requested date and time, and ranking available courts from cheapest to most expensive.
+`padel-finder` is a Python command-line tool that helps users find available padel courts by checking multiple venues, filtering for a requested date and time, and ranking available courts from cheapest to most expensive. 
 
-Supported venues:
+Supported venues (personal favorite courts):
 
 - Casablanca Padel Club
 - The Six Point Padel Club
